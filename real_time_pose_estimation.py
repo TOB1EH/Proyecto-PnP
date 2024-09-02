@@ -1,21 +1,23 @@
+# Este script realiza la estimación de pose en tiempo real utilizando un tablero de ajedrez 
+# para la calibración de la cámara. Carga los parámetros de calibración desde archivos, 
+# captura video en tiempo real, detecta los puntos 2D del tablero de ajedrez, refina estos 
+# puntos, estima la pose de la cámara y dibuja los ejes de la cámara en la imagen capturada.
+
+# 2024 Tobias Funes (tobiasfunes@hotmail.com.ar)
+
 import cv2 as cv
 import numpy as np
 import pickle
+from constants import nCols, nRows, criteria, CALIBRATION_DIR
 
-
-nCols  =11
-nRows = 6
-
-# El criterio de terminación indica cuándo detener el algoritmo de minimización.
-criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-
-with open('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/objpoints.pkl', 'rb') as f:
+### CARGAR CALIBRACION ###
+with open(CALIBRATION_DIR + 'objpoints.pkl', 'rb') as f:
     objp = pickle.load(f)
 
-with open('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/cameraMatrix.pkl', 'rb') as f:
+with open(CALIBRATION_DIR + 'cameraMatrix.pkl', 'rb') as f:
     cameraMatrix = pickle.load(f)
 
-with open('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/distortion.pkl', 'rb') as f:
+with open(CALIBRATION_DIR + 'distortion.pkl', 'rb') as f:
     dist = pickle.load(f)
 
 

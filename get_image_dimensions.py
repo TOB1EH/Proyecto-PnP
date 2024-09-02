@@ -1,3 +1,8 @@
+# Este script utiliza OpenCV para capturar una imagen desde la webcam 
+# y obtiene sus dimensiones (ancho y alto), que luego imprime en la consola.
+
+# 2024 Tobias Funes (tobiasfunes@hotmail.com.ar)
+
 import cv2
 
 # Inicializa la webcam

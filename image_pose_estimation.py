@@ -1,29 +1,34 @@
+# Este script realiza la estimación de la pose de una cámara utilizando una imagen de un tablero de ajedrez. 
+# Carga los parámetros de calibración de la cámara y los puntos del objeto desde archivos, 
+# detecta los bordes del tablero en la imagen, refina los puntos detectados, 
+# estima la rotación y la traslación de la cámara, y finalmente dibuja los ejes de la cámara en la imagen resultante.
+
+# 2024 Tobias Funes (tobiasfunes@hotmail.com.ar)
+
 import cv2 as cv
 import numpy as np
 import pickle
-
-nCols = 11
-nRows = 6
-
-# El criterio de terminación indica cuándo detener el algoritmo de minimización.
-criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+from constants import nCols, nRows, criteria, CALIBRATION_DIR
 
 # Cargar la imagen que deseas procesar
-img = cv.imread('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/test_image.png')
+img = cv.imread('test_image.png')
 
+### CARGAR CALIBRACION ###
 
-with open('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/objpoints.pkl', 'rb') as f:
+with open(CALIBRATION_DIR + 'objpoints.pkl', 'rb') as f:
     objp = pickle.load(f)
 
-with open('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/cameraMatrix.pkl', 'rb') as f:
+with open(CALIBRATION_DIR + 'cameraMatrix.pkl', 'rb') as f:
     cameraMatrix = pickle.load(f)
 
-with open('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/distortion.pkl', 'rb') as f:
+with open(CALIBRATION_DIR + 'distortion.pkl', 'rb') as f:
     dist = pickle.load(f)
 
 gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 ret, corners = cv.findChessboardCorners(gray, (nCols, nRows), None)
 
+
+### ESTIMAR POSE ###
 if ret == True:
     # Refina los puntos 2D detectados
     cornersRefined = cv.cornerSubPix(gray, corners, (11,11), (-1,-1), criteria)

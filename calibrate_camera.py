@@ -1,32 +1,29 @@
+# Este script realiza la calibración de una cámara utilizando un patrón de tablero de ajedrez. 
+# Primero, detecta las esquinas del tablero en varias imágenes y almacena los puntos 3D y 2D correspondientes. 
+# Luego, utiliza estos puntos para calcular la matriz de la cámara y los coeficientes de distorsión, 
+# que se guardan en archivos. Finalmente, se incluye un método para eliminar la distorsión de una imagen 
+# usando los parámetros obtenidos durante la calibración.
+
+# 2024 Tobias Funes (tobiasfunes@hotmail.com.ar)
+
 import cv2 as cv
 import numpy as np
 import glob
 import pickle
+from constants import nCols, nRows, criteria, frameSize,CAPTURES_DIR, CALIBRATION_DIR
 
 ### ENCONTRAR ESQUINAS DEL TABLERO DE AJEDREZ: PUNTOS DE OBJETO Y PUNTOS DE IMAGEN ###
-
-# Definir la forma y tamaño del tablero de ajedrez (en este caso, 11 x 6)
-nCols = 11 # nro de columnas - 1
-nRows = 6 # nro de filas - 1
-
-frameSize = (640,480) # tamanio de imagen capturada por la webcam
-
-# Define los criterios de terminación para el refinamiento de esquinas (corners) en la función
-# El criterio de terminación indica cuándo detener el algoritmo de minimización.
-criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-
 
 # Definir los puntos 3D del tablero de ajedrez (en este caso, los puntos de la esquina superior izquierda y la esquina inferior derecha)
 objp = np.zeros((nCols * nRows, 3), np.float32)  # Puntos 3D del tablero de ajedrez
 objp[:,:2] = np.mgrid[0:nCols,0:nRows].T.reshape(-1,2) # crear un patrón de puntos 3D que representan la posición de los esquinas del patrón de calibración.
-
 
 # Arrays para almacenar los puntos 3D y 2D de todos los objetos detectados
 objpoints = []  
 imgpoints = [] 
 
 # Buscar todos los archivos con extensión.png en la carpeta de capturas
-images = glob.glob('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/capturas/img*.png')
+images = glob.glob(CAPTURES_DIR + 'img*.png')
 
 ## Recorrer todas las imagenes ##
 for image in images:
@@ -58,13 +55,13 @@ cv.destroyAllWindows() # cerrar ventanas abiertas por OpenCV
 ret, cameraMatrix, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, frameSize, None, None)
 
 # Guardar puntos de objeto (objp) en archivo objpoints.pkl
-pickle.dump(objp, open("/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/objpoints.pkl", "wb"), protocol = 2)
+pickle.dump(objp, open(CALIBRATION_DIR + "objpoints.pkl", "wb"), protocol = 2)
 
 # Guardar matriz de cámara (cameraMatrix) en archivo cameraMatrix.pkl
-pickle.dump(cameraMatrix, open("/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/cameraMatrix.pkl", "wb"), protocol = 2)
+pickle.dump(cameraMatrix, open(CALIBRATION_DIR + "cameraMatrix.pkl", "wb"), protocol = 2)
 
 # Guardar coeficientes de distorsión (dist) en archivo distortion.pkl
-pickle.dump(dist, open("/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/distortion.pkl", "wb"), protocol = 2)
+pickle.dump(dist, open(CALIBRATION_DIR + "distortion.pkl", "wb"), protocol = 2)
 
 print("CALIBRACION FINALIZADA!")
 
