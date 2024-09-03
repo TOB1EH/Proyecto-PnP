@@ -45,11 +45,15 @@ if ret == True:
     axis = np.float32([[3,0,0], [0,3,0], [0,0,-3]])
     imgpts, jac = cv.projectPoints(axis, rvec, tvec, cameraMatrix, dist)
 
-
+    # convertir la lista de enteros en una tupla
     def tupleOfInts(array):
-        return tuple(int(x) for x in array) 
+        return tuple(int(x) for x in array)
 
     corner = tupleOfInts(cornersRefined[0].ravel())
+    # El método ravel() se aplica al elemento seleccionado, lo que 
+    # devuelve un array plano (1D) de los elementos del array original.
+
+    # Dibujar las lineas en la imagen
     img = cv.line(img, corner, tupleOfInts(imgpts[0].ravel()), (255,0,0), 2)
     img = cv.line(img, corner, tupleOfInts(imgpts[1].ravel()), (0,255,0), 2)
     img = cv.line(img, corner, tupleOfInts(imgpts[2].ravel()), (0,0,255), 2)
