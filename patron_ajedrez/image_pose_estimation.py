@@ -8,7 +8,7 @@
 import cv2 as cv
 import numpy as np
 import pickle
-from constants import nCols, nRows, criteria, CALIBRATION_DIR
+from patron_ajedrez.constants import nCols, nRows, criteria, CALIBRATION_DIR
 
 # Cargar la imagen que deseas procesar
 img = cv.imread('test_image.png')

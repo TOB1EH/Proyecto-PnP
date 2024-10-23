@@ -10,7 +10,7 @@ import cv2 as cv
 import numpy as np
 import glob
 import pickle
-from constants import nCols, nRows, criteria, frameSize,CAPTURES_DIR, CALIBRATION_DIR
+from patron_ajedrez.constants import nCols, nRows, criteria, frameSize,CAPTURES_DIR, CALIBRATION_DIR
 
 ### ENCONTRAR ESQUINAS DEL TABLERO DE AJEDREZ: PUNTOS DE OBJETO Y PUNTOS DE IMAGEN ###
 
@@ -64,46 +64,3 @@ pickle.dump(cameraMatrix, open(CALIBRATION_DIR + "cameraMatrix.pkl", "wb"), prot
 pickle.dump(dist, open(CALIBRATION_DIR + "distortion.pkl", "wb"), protocol = 2)
 
 print("CALIBRACION FINALIZADA!")
-
-
-
-""" 
-### REMOVER DISTORCION DE UNA IMAGEN ###
-
-# Load previously saved camera calibration result
-img = cv.imread('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/cali.png') # cali5.png es la imagen de prueba
-h,  w = img.shape[:2]
-newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(cameraMatrix, dist, (w,h), 1, (w,h))
-
-# Undistort
-dst = cv.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
-
-# crop the image
-x, y, w, h = roi
-dst = dst[y:y+h, x:x+w]
-cv.imwrite('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/caliResult1.png', dst)
-
-# Undistort with Remapping
-mapx, mapy = cv.initUndistortRectifyMap(cameraMatrix, dist, None, newCameraMatrix, (w,h), 5)
-dst = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)
-
-# crop the image
-x, y, w, h = roi
-dst = dst[y:y+h, x:x+w]
-cv.imwrite('/home/tobias/Documentos/workSpace/Proyecto_pnp/solvepnp/calibracion/caliResult2.png', dst)
-
-# Reprojection Error
-mean_error = 0
-
-for i in range(len(objpoints)):
-    imgpoints2, _ = cv.projectPoints(objpoints[i], rvecs[i], tvecs[i], cameraMatrix, dist)
-    error = cv.norm(imgpoints[i], imgpoints2, cv.NORM_L2)/len(imgpoints2)
-    mean_error += error
-
-print("total error: {}".format(mean_error/len(objpoints)) )
-
- """
-
-
-
-
