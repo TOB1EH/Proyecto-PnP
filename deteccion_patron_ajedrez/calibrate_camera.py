@@ -10,7 +10,7 @@ import cv2 as cv
 import numpy as np
 import glob
 import pickle
-from patron_ajedrez.constants import nCols, nRows, criteria, frameSize,CAPTURES_DIR, CALIBRATION_DIR
+from constants import nCols, nRows, criteria, frameSize,CAPTURES_DIR, CALIBRATION_DIR
 
 ### ENCONTRAR ESQUINAS DEL TABLERO DE AJEDREZ: PUNTOS DE OBJETO Y PUNTOS DE IMAGEN ###
 
